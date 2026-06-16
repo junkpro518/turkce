@@ -17,6 +17,7 @@
 | [05-telegram.md](05-telegram.md) | تصميم بوت التيليجرام + إصلاح أخطاء النسخة الفاشلة |
 | [06-roadmap.md](06-roadmap.md) | نطاق v1 + المراحل اللاحقة |
 | [07-quality-and-pitfalls.md](07-quality-and-pitfalls.md) | الاختبار + جدول مزالق النسخ الثلاث |
+| [08-configuration.md](08-configuration.md) | الإعداد · المتغيّرات البيئية · النماذج · إعدادات المعلّم |
 
 ## المبدأ الواحد الحاكم
 
