@@ -18,6 +18,7 @@
 | [06-roadmap.md](06-roadmap.md) | نطاق v1 + المراحل اللاحقة |
 | [07-quality-and-pitfalls.md](07-quality-and-pitfalls.md) | الاختبار + جدول مزالق النسخ الثلاث |
 | [08-configuration.md](08-configuration.md) | الإعداد · المتغيّرات البيئية · النماذج · إعدادات المعلّم |
+| [09-open-questions.md](09-open-questions.md) | أسئلة مفتوحة لم تُحسَم بعد (مرتّبة بالأولوية) |
 
 ## المبدأ الواحد الحاكم
 
