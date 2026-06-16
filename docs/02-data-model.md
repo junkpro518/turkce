@@ -43,6 +43,7 @@
 
 1. **شجرة المنهج (CEFR skill graph) تبقى في الكود/config**، لا في جدول DB.
    - بيانات مرجعية ثابتة (قواعد + كفايات وظيفية مرتّبة بالمتطلّبات السابقة).
+   - **مؤصَّلة على مصادر معتمدة** (Maarif Vakfı/MEB + تسلسل أكاديمي + Yedi İklim) — لا ارتجال LLM. انظر [10-curriculum-sources](10-curriculum-sources.md) و[09 §Q1](09-open-questions.md).
    - أسهل في النسخ (versioning) والاختبار من جدول DB.
    - التقدّم يُتتبَّع في `grammar_mastery` + `learner_profile`.
 

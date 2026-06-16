@@ -19,6 +19,7 @@
 | [07-quality-and-pitfalls.md](07-quality-and-pitfalls.md) | الاختبار + جدول مزالق النسخ الثلاث |
 | [08-configuration.md](08-configuration.md) | الإعداد · المتغيّرات البيئية · النماذج · إعدادات المعلّم |
 | [09-open-questions.md](09-open-questions.md) | أسئلة مفتوحة لم تُحسَم بعد (مرتّبة بالأولوية) |
+| [10-curriculum-sources.md](10-curriculum-sources.md) | مصادر المنهج + تسلسل القواعد حسب CEFR (مرجع التأليف) |
 
 ## المبدأ الواحد الحاكم
 
