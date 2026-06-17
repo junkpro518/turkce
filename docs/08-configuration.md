@@ -7,8 +7,8 @@
 ```
 # --- الذكاء الاصطناعي ---
 OPENROUTER_API_KEY=...          # المزوّد الرئيسي (نداء مباشر، لا وسيط)
-TEACHER_MODEL=...               # نموذج المحادثة (قوي، حُكم تربوي) — قابل للتغيير
-ANALYZER_MODEL=...              # نموذج التحليل (سريع، مخرجات منظّمة)
+TEACHER_MODEL=google/gemini-3.1-flash-lite   # محادثة سريعة (احتياطي: deepseek/deepseek-v4-flash)
+ANALYZER_MODEL=openai/gpt-5                   # تصحيح قوي (احتياطي: anthropic/claude-sonnet-4.5)
 
 # --- قاعدة البيانات (Supabase) ---
 DATABASE_URL=...                # اتصال Drizzle/Postgres
@@ -44,7 +44,7 @@ SERPER_API_KEY=...              # محتوى/بحث ويب (إن لزم)
 
 - **نداء مباشر عبر OpenRouter** (لا Hermes، لا subprocess) — تفادياً لهشاشة 502/504.
 - فعّل **prompt caching** في OpenRouter (يخفّض 60–80% للسياق المتكرّر).
-- النماذج **قابلة للتبديل عبر env** دون تغيير كود. الاختيار النهائي يُحسَم في [Q5](09-open-questions.md).
+- النماذج **قابلة للتبديل عبر env** دون تغيير كود. الافتراضات أعلاه (حسم [Q5](09-open-questions.md))، و**تُصادَق بأرقام [Q3](09-open-questions.md)** (golden set + F0.5) — "الأحدث ليس دائماً أفضل تركياً". أعِد سحب `api/v1/models` قبل الإنتاج.
 - ⚠️ تجنّب النماذج المنتهية: `gemini-2.0-flash-001` أُوقف 2026-06-01؛ `gemini-2.5-flash` يُوقَف 2026-10-16.
 
 ## التأصيل الحتمي (تبعية إلزامية — حسم Q2)
