@@ -6,7 +6,9 @@ import { z } from "zod";
 const EnvSchema = z.object({
   OPENROUTER_API_KEY: z.string().min(1),
   TEACHER_MODEL: z.string().min(1).default("google/gemini-3.1-flash-lite"),
+  TEACHER_FALLBACK_MODEL: z.string().min(1).default("deepseek/deepseek-v4-flash"),
   ANALYZER_MODEL: z.string().min(1).default("openai/gpt-5"),
+  ANALYZER_FALLBACK_MODEL: z.string().min(1).default("anthropic/claude-sonnet-4.5"),
   DATABASE_URL: z.string().min(1),
   TELEGRAM_BOT_TOKEN: z.string().min(1),
   TELEGRAM_WEBHOOK_SECRET: z.string().min(1),

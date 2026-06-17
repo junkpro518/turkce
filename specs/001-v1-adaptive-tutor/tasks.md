@@ -88,17 +88,17 @@ transport dependency. Most are independently parallelizable.
 path calls use the strong analyzer model. Depends on Phase 3 (morphology gate, mastery, srs,
 curriculum keys).
 
-- [ ] T025 Implement `lib/ai/provider.ts` — OpenRouter provider via the AI SDK, env-driven model config (`TEACHER_MODEL`/`ANALYZER_MODEL`), temperatures, prompt caching
-- [ ] T026 [P] Implement all Zod schemas (`AnalysisResult`, `OvercorrectionVerdict`, `QuizPayload`, `VocabCardBuild`, `SessionSummary`) in `lib/ai/schemas.ts` per contracts/ai-schemas.md
-- [ ] T027 [US1] Implement deep-correction analyzer (`generateObject` → `AnalysisResult`) with post-parse validation: every Turkish form via `morphology.isValid`; `grammarPoint` checked against curriculum keys — **(fix I1)** an unknown key is **tolerated (kept + logged via T009 logger), not hard-failed**, during the partial-taxonomy window; empty-result fallback — in `lib/analyzer/correct.ts`
-- [ ] T028 [US1] Implement anti-overcorrection pass (`OvercorrectionVerdict`) gating `error_log` writes; low-confidence ⇒ tutor expresses doubt in `lib/analyzer/overcorrection.ts`
+- [X] T025 Implement `lib/ai/provider.ts` — OpenRouter provider via the AI SDK, env-driven model config (`TEACHER_MODEL`/`ANALYZER_MODEL`), temperatures, prompt caching
+- [X] T026 [P] Implement all Zod schemas (`AnalysisResult`, `OvercorrectionVerdict`, `QuizPayload`, `VocabCardBuild`, `SessionSummary`) in `lib/ai/schemas.ts` per contracts/ai-schemas.md
+- [X] T027 [US1] Implement deep-correction analyzer (`generateObject` → `AnalysisResult`) with post-parse validation: every Turkish form via `morphology.isValid`; `grammarPoint` checked against curriculum keys — **(fix I1)** an unknown key is **tolerated (kept + logged via T009 logger), not hard-failed**, during the partial-taxonomy window; empty-result fallback — in `lib/analyzer/correct.ts`
+- [X] T028 [US1] Implement anti-overcorrection pass (`OvercorrectionVerdict`) gating `error_log` writes; low-confidence ⇒ tutor expresses doubt in `lib/analyzer/overcorrection.ts`
 - [ ] T029 [US3] Implement vocab card building (`VocabCardBuild`) + repeated-card judge + morphology gate + unique upsert into `vocab_cards` in `lib/analyzer/cards.ts`
 - [ ] T030 [US2] Implement session-summary generation (`SessionSummary`) with deterministic fallback in `lib/analyzer/summary.ts`
 - [ ] T031 [US2] Implement tiered context builder (Tier 1 static incl. seeded settings from T011 + Tier 2 dynamic from the learner model) in `lib/orchestrator/context.ts`
-- [ ] T032 [US1] Implement teacher call (`streamText`, mode decision, structured `QuizPayload` emission) + retry then backup-model fallback in `lib/orchestrator/teacher.ts`
-- [ ] T033 [US1] Implement `orchestrator.handleTurn`: persist inbound message **first** → stream teacher reply → schedule background analysis → on completion set `messages.analyzed_at`, write `error_log`, update mastery/SRS in `lib/orchestrator/turn.ts`
+- [X] T032 [US1] Implement teacher call (`streamText`, mode decision, structured `QuizPayload` emission) + retry then backup-model fallback in `lib/orchestrator/teacher.ts`
+- [X] T033 [US1] Implement `orchestrator.handleTurn`: persist inbound message **first** → stream teacher reply → schedule background analysis → on completion set `messages.analyzed_at`, write `error_log`, update mastery/SRS in `lib/orchestrator/turn.ts`
 - [ ] T034 [US2] Wire analyzer `masterySignals` → `lib/mastery` updates → `grammar_mastery` + periodic per-skill CEFR re-derivation in `lib/orchestrator/turn.ts`
-- [ ] T035 [P] [US1] Integration test (mocked AI): reply not blocked by analysis; message persisted before analysis; `analyzed_at` set after; analyzer failure degrades gracefully in `tests/orchestrator/turn.test.ts`
+- [X] T035 [P] [US1] Integration test (mocked AI): reply not blocked by analysis; message persisted before analysis; `analyzed_at` set after; analyzer failure degrades gracefully in `tests/orchestrator/turn.test.ts`
 
 **Checkpoint**: A turn can be driven end-to-end with mocked AI (SC-002, SC-003, SC-004).
 
