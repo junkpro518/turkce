@@ -44,6 +44,7 @@ Managed via natural-language conversation in v1 (no goal commands).
 | `grammar_point` | text | key from the fixed curriculum taxonomy |
 | `mastery_score` | real | 0–1, EWMA (Q4) |
 | `evidence_count` | int | correct-usage evidences |
+| `sessions_seen` | int | distinct sessions with evidence (plan addition — enforces the ≥2-session mastery rule, Q4) |
 | `status` | text | `new` \| `learning` \| `mastered` |
 | `last_seen_at` | timestamptz | |
 | — | — | unique `(profile_id, grammar_point)` |

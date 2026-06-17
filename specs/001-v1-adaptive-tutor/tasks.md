@@ -36,7 +36,7 @@ is called out in Implementation Strategy.
 
 - [X] T001 Initialize Next.js 15 (App Router) + TypeScript project at repo root (`package.json`, `tsconfig.json`, `app/layout.tsx`, `app/page.tsx` placeholder)
 - [X] T002 [P] Install and pin runtime deps: `next`, `ai`, an OpenRouter AI-SDK provider, `drizzle-orm`, a Postgres driver, `zod`, `grammy`, `ts-fsrs`, `nlptoolkit-morphologicalanalysis`, `nlptoolkit-spellchecker` (record versions in `package.json`)
-- [ ] T003 [P] Install and configure dev deps: `vitest` + `vitest.config.ts`, ESLint + Prettier
+- [X] T003 [P] Install and configure dev deps: `vitest` + `vitest.config.ts`, ESLint + Prettier
 - [X] T004 [P] Create `.env.example` with all required vars (docs/08) and ensure `.env` is git-ignored
 - [X] T005 [P] Create the `lib/` engine folder tree, `data/`, and `tests/` per plan.md Project Structure (empty index files only)
 
@@ -48,12 +48,12 @@ is called out in Implementation Strategy.
 
 **Purpose**: Infrastructure every layer depends on. **No core/AI/client work begins until done.**
 
-- [ ] T006 Implement `lib/config/env.ts` (Zod-parsed environment) and `lib/config/constants.ts` (tunable mastery α/thresholds/min-evidence/min-sessions, demotion threshold, CEFR promotion %, idle timeout) per data-model.md
-- [ ] T007 Define the Drizzle schema for all 8 tables incl. `messages.analyzed_at` and `messages.flagged` in `lib/db/schema.ts` per data-model.md
-- [ ] T008 Configure `drizzle.config.ts` + DB client in `lib/db/client.ts`; generate the initial migration into `drizzle/`
-- [ ] T009 [P] Implement structured logging + friendly-error helpers in `lib/config/logger.ts` (Principle IV: log technical, never surface raw)
+- [X] T006 Implement `lib/config/env.ts` (Zod-parsed environment) and `lib/config/constants.ts` (tunable mastery α/thresholds/min-evidence/min-sessions, demotion threshold, CEFR promotion %, idle timeout) per data-model.md
+- [X] T007 Define the Drizzle schema for all 8 tables incl. `messages.analyzed_at` and `messages.flagged` in `lib/db/schema.ts` per data-model.md
+- [X] T008 Configure `drizzle.config.ts` + DB client in `lib/db/client.ts`; generate the initial migration into `drizzle/`
+- [X] T009 [P] Implement structured logging + friendly-error helpers in `lib/config/logger.ts` (Principle IV: log technical, never surface raw)
 - [X] T010 **(fix I1)** Author the **A1 grammar-point key skeleton** in `data/curriculum/keys.ts` — the stable node `key`s with `level`, `prerequisites`, and `required`/`borderline` flags only (NO full `canDo`/`targetVocab` yet), grounded in docs/10. This is the taxonomy that curriculum selection (T017) and analyzer grammarPoint validation (T027) reference before full authoring (T045)
-- [ ] T011 **(fix U1)** Implement default tutor settings: define defaults in `lib/config/settings.ts` (language_mix, correction_strictness, response_style, focus_areas, custom_instructions) and a seed step in `lib/db/seed.ts` that writes them into `learner_profile.settings` (FR-025)
+- [X] T011 **(fix U1)** Implement default tutor settings: define defaults in `lib/config/settings.ts` (language_mix, correction_strictness, response_style, focus_areas, custom_instructions) and a seed step in `lib/db/seed.ts` that writes them into `learner_profile.settings` (FR-025)
 
 **Checkpoint**: Migrations apply; config, logging, the A1 taxonomy keys, and default settings exist.
 
