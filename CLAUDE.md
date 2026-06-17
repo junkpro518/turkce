@@ -148,5 +148,7 @@ When changing one file, review the other file and update any shared rules so bot
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+shell commands, and other important information, read the current plan:
+`specs/001-v1-adaptive-tutor/plan.md` (with research.md, data-model.md,
+contracts/, quickstart.md in the same folder).
 <!-- SPECKIT END -->
