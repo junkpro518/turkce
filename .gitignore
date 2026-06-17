@@ -22,3 +22,6 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+
+# Next.js generated
+next-env.d.ts

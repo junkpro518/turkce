@@ -108,11 +108,11 @@ curriculum keys).
 
 **Purpose**: Adapt Telegram ↔ engine. No pedagogical logic here (Principle VII). Depends on Phase 4.
 
-- [ ] T036 [US1] Implement webhook route `app/api/telegram/route.ts` (grammY `webhookCallback`) + auth (secret-token header + `ALLOWED_TELEGRAM_USER_ID`; others ignored) per contracts/telegram-webhook.md
-- [ ] T037 [US1] Implement streaming render (`editMessageText` ~1.5s + typing action) and split-message render in `lib/telegram/render.ts` (uses T021)
-- [ ] T038 [US1] Implement quiz inline-keyboard render + callback grading (reveal correct/incorrect + explanation) in `lib/telegram/quiz.ts`
+- [X] T036 [US1] Implement webhook route `app/api/telegram/route.ts` (grammY `webhookCallback`) + auth (secret-token header + `ALLOWED_TELEGRAM_USER_ID`; others ignored) per contracts/telegram-webhook.md
+- [X] T037 [US1] Implement streaming render (`editMessageText` ~1.5s + typing action) and split-message render in `lib/telegram/render.ts` (uses T021)
+- [X] T038 [US1] Implement quiz inline-keyboard render + callback grading (reveal correct/incorrect + explanation) in `lib/telegram/quiz.ts`
 - [ ] T039 [US3] Implement `/review` SRS flow over Telegram (reveal → forgot/hard/good/easy → reschedule via `lib/srs`) in `lib/telegram/review.ts`
-- [ ] T040 [US1] Implement 🚩 flag callback → set `messages.flagged = true` in `lib/telegram/flag.ts`
+- [X] T040 [US1] Implement 🚩 flag callback → set `messages.flagged = true` in `lib/telegram/flag.ts`
 - [ ] T041 [US4] Implement `/start` onboarding + light placement (conservative A1, lowered early-evidence bar; creates the profile, then T011 settings defaults apply) in `lib/telegram/onboarding.ts`
 - [ ] T042 [US4] Implement `/progress` command rendering `lib/progress` output in `lib/telegram/progress.ts`
 - [ ] T043 [US2] Implement natural-language goal management (intent → goals add/edit/reprioritize/pause; auto-suggest requires approval) in `lib/orchestrator/goals.ts`
