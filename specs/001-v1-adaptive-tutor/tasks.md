@@ -34,11 +34,11 @@ is called out in Implementation Strategy.
 
 **Purpose**: Project initialization.
 
-- [ ] T001 Initialize Next.js 15 (App Router) + TypeScript project at repo root (`package.json`, `tsconfig.json`, `app/layout.tsx`, `app/page.tsx` placeholder)
-- [ ] T002 [P] Install and pin runtime deps: `next`, `ai`, an OpenRouter AI-SDK provider, `drizzle-orm`, a Postgres driver, `zod`, `grammy`, `ts-fsrs`, `nlptoolkit-morphologicalanalysis`, `nlptoolkit-spellchecker` (record versions in `package.json`)
+- [X] T001 Initialize Next.js 15 (App Router) + TypeScript project at repo root (`package.json`, `tsconfig.json`, `app/layout.tsx`, `app/page.tsx` placeholder)
+- [X] T002 [P] Install and pin runtime deps: `next`, `ai`, an OpenRouter AI-SDK provider, `drizzle-orm`, a Postgres driver, `zod`, `grammy`, `ts-fsrs`, `nlptoolkit-morphologicalanalysis`, `nlptoolkit-spellchecker` (record versions in `package.json`)
 - [ ] T003 [P] Install and configure dev deps: `vitest` + `vitest.config.ts`, ESLint + Prettier
-- [ ] T004 [P] Create `.env.example` with all required vars (docs/08) and ensure `.env` is git-ignored
-- [ ] T005 [P] Create the `lib/` engine folder tree, `data/`, and `tests/` per plan.md Project Structure (empty index files only)
+- [X] T004 [P] Create `.env.example` with all required vars (docs/08) and ensure `.env` is git-ignored
+- [X] T005 [P] Create the `lib/` engine folder tree, `data/`, and `tests/` per plan.md Project Structure (empty index files only)
 
 **Checkpoint**: Project builds and `npm test` runs (no tests yet).
 
@@ -52,7 +52,7 @@ is called out in Implementation Strategy.
 - [ ] T007 Define the Drizzle schema for all 8 tables incl. `messages.analyzed_at` and `messages.flagged` in `lib/db/schema.ts` per data-model.md
 - [ ] T008 Configure `drizzle.config.ts` + DB client in `lib/db/client.ts`; generate the initial migration into `drizzle/`
 - [ ] T009 [P] Implement structured logging + friendly-error helpers in `lib/config/logger.ts` (Principle IV: log technical, never surface raw)
-- [ ] T010 **(fix I1)** Author the **A1 grammar-point key skeleton** in `data/curriculum/keys.ts` — the stable node `key`s with `level`, `prerequisites`, and `required`/`borderline` flags only (NO full `canDo`/`targetVocab` yet), grounded in docs/10. This is the taxonomy that curriculum selection (T017) and analyzer grammarPoint validation (T027) reference before full authoring (T045)
+- [X] T010 **(fix I1)** Author the **A1 grammar-point key skeleton** in `data/curriculum/keys.ts` — the stable node `key`s with `level`, `prerequisites`, and `required`/`borderline` flags only (NO full `canDo`/`targetVocab` yet), grounded in docs/10. This is the taxonomy that curriculum selection (T017) and analyzer grammarPoint validation (T027) reference before full authoring (T045)
 - [ ] T011 **(fix U1)** Implement default tutor settings: define defaults in `lib/config/settings.ts` (language_mix, correction_strictness, response_style, focus_areas, custom_instructions) and a seed step in `lib/db/seed.ts` that writes them into `learner_profile.settings` (FR-025)
 
 **Checkpoint**: Migrations apply; config, logging, the A1 taxonomy keys, and default settings exist.
@@ -64,19 +64,19 @@ is called out in Implementation Strategy.
 **Purpose**: The deterministic, interface-agnostic modules — written test-first. No AI, no
 transport dependency. Most are independently parallelizable.
 
-- [ ] T012 [P] Vitest for mastery: EWMA update, status transitions (new→learning→mastered with score≥0.8 + ≥5 evidence + ≥2 sessions), demotion-harder-than-promotion, luck resistance, per-skill CEFR derivation in `tests/mastery/mastery.test.ts`
-- [ ] T013 [US2] Implement `lib/mastery/` (EWMA mastery, status thresholds, per-skill CEFR derivation — all pure) to pass T012
-- [ ] T014 [P] Vitest for SRS determinism: same card + rating ⇒ identical next `due_at`; state transitions in `tests/srs/srs.test.ts`
-- [ ] T015 [P] [US3] Implement `lib/srs/` pure wrappers over `ts-fsrs` (rate, schedule, capture) to pass T014
-- [ ] T016 [P] Vitest for curriculum next-focus selection: balances progress/weakness/active-goal, respects prerequisites, handles borderline nodes (against the T010 key skeleton) in `tests/curriculum/select.test.ts`
-- [ ] T017 [US2] Implement `lib/curriculum/` — `CurriculumNode` type, tree loader, and pure next-focus selection — to pass T016 (uses the T010 A1 keys; full A1→A2 content authored in T045)
-- [ ] T018 [P] Vitest for F0.5 scorer: precision-weighted F0.5 over edit spans + overcorrection rate on correct sentences in `tests/eval/score.test.ts`
-- [ ] T019 [P] Implement `lib/eval/score.ts` — pure TypeScript F0.5 + overcorrection scorer (no Python/M2/ERRANT) to pass T018
-- [ ] T020 [P] Vitest for Telegram message splitting: >4096 boundaries, never drops content in `tests/telegram/split.test.ts`
-- [ ] T021 [P] Implement `lib/telegram/split.ts` (pure) to pass T020
-- [ ] T022 [P] Vitest for morphology gate: known-good words pass, garbage ⇒ false in `tests/morphology/isValid.test.ts`
-- [ ] T023 Implement `lib/morphology/` — `FsmMorphologicalAnalyzer` startup singleton + `isValid(word)` gate; bundle the package data files (`turkish_finite_state_machine.xml`, `turkish_dictionary.txt`, `suffixes.txt`, etc.) and ensure they load at runtime cwd — to pass T022
-- [ ] T024 [P] [US4] Vitest + implement `lib/progress/` pure derivation (per-skill CEFR, current focus, top weaknesses, due reviews, streak/XP) in `tests/progress/` and `lib/progress/`
+- [X] T012 [P] Vitest for mastery: EWMA update, status transitions (new→learning→mastered with score≥0.8 + ≥5 evidence + ≥2 sessions), demotion-harder-than-promotion, luck resistance, per-skill CEFR derivation in `tests/mastery/mastery.test.ts`
+- [X] T013 [US2] Implement `lib/mastery/` (EWMA mastery, status thresholds, per-skill CEFR derivation — all pure) to pass T012
+- [X] T014 [P] Vitest for SRS determinism: same card + rating ⇒ identical next `due_at`; state transitions in `tests/srs/srs.test.ts`
+- [X] T015 [P] [US3] Implement `lib/srs/` pure wrappers over `ts-fsrs` (rate, schedule, capture) to pass T014
+- [X] T016 [P] Vitest for curriculum next-focus selection: balances progress/weakness/active-goal, respects prerequisites, handles borderline nodes (against the T010 key skeleton) in `tests/curriculum/select.test.ts`
+- [X] T017 [US2] Implement `lib/curriculum/` — `CurriculumNode` type, tree loader, and pure next-focus selection — to pass T016 (uses the T010 A1 keys; full A1→A2 content authored in T045)
+- [X] T018 [P] Vitest for F0.5 scorer: precision-weighted F0.5 over edit spans + overcorrection rate on correct sentences in `tests/eval/score.test.ts`
+- [X] T019 [P] Implement `lib/eval/score.ts` — pure TypeScript F0.5 + overcorrection scorer (no Python/M2/ERRANT) to pass T018
+- [X] T020 [P] Vitest for Telegram message splitting: >4096 boundaries, never drops content in `tests/telegram/split.test.ts`
+- [X] T021 [P] Implement `lib/telegram/split.ts` (pure) to pass T020
+- [X] T022 [P] Vitest for morphology gate: known-good words pass, garbage ⇒ false in `tests/morphology/isValid.test.ts`
+- [X] T023 Implement `lib/morphology/` — `FsmMorphologicalAnalyzer` startup singleton + `isValid(word)` gate; bundle the package data files (`turkish_finite_state_machine.xml`, `turkish_dictionary.txt`, `suffixes.txt`, etc.) and ensure they load at runtime cwd — to pass T022
+- [X] T024 [P] [US4] Vitest + implement `lib/progress/` pure derivation (per-skill CEFR, current focus, top weaknesses, due reviews, streak/XP) in `tests/progress/` and `lib/progress/`
 
 **Checkpoint**: `npm test` green for the entire deterministic core (SC-005, SC-007, SC-009, SC-010).
 

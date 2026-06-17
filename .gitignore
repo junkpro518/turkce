@@ -1,5 +1,24 @@
 node_modules/
 .next/
+dist/
+build/
+out/
 .env*
 !.env.example
+*.log
+coverage/
+*.tsbuildinfo
+
+# Morphology analyzer data files (copied into cwd at runtime from node_modules; bundled into the
+# Docker image at deploy time — see lib/morphology). Not source.
+/turkish_finite_state_machine.xml
+/turkish_dictionary.txt
+/turkish_misspellings.txt
+/turkish_morphological_lexicon.txt
+/suffixes.txt
+/pronunciations.txt
+
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
