@@ -19,6 +19,15 @@ deterministic support systems track mastery, schedule vocabulary review, and cho
 practice next. Scope is deliberately depth-first: a small, excellent core covering CEFR levels
 **A1→A2**, delivered over Telegram.
 
+## Clarifications
+
+### Session 2026-06-17
+
+- Q: How does authoring the A1→A2 curriculum tree and the 150–300-case golden set fit into v1? → A: In-scope as explicit v1 tasks with a defined minimum (full A1→A2 tree + ≥150 golden cases including 25–30% correct sentences); this content gates v1 completion.
+- Q: How is a session bounded (drives summary generation and current-focus snapshot)? → A: Idle timeout — a session ends after a configurable period of inactivity (default ~30 minutes); the session summary is generated on close.
+- Q: How are tutor settings managed in v1, given docs/08 puts a runtime settings-approval UI out of scope? → A: Config/seed only — settings exist and shape the tutor but are not runtime-editable via Telegram in v1.
+- Q: How does the learner add/edit/reprioritize goals (FR-016)? → A: Natural language via the tutor — the learner expresses intent in conversation and the tutor updates goals; no dedicated goal commands in v1.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Intelligent conversation with deep correction (Priority: P1)
@@ -206,11 +215,13 @@ estimates; request progress and verify an accurate text summary; verify a daily 
   level and MUST change gradually — never jump from a single message.
 - **FR-014**: The curriculum MUST be a deterministic CEFR skill tree (A1→A2 for v1) grounded in
   authoritative Turkish sources (not improvised), ordered by prerequisites, with contested nodes
-  marked borderline.
+  marked borderline. Authoring the full A1→A2 tree (grounded in approved sources, human-verified)
+  is an in-scope v1 deliverable and gates v1 completion.
 - **FR-015**: The system MUST select the "next focus" from the learner model, balancing curriculum
   progress, pressing weaknesses, and active goals, and MUST recompute when mastery or goals change.
-- **FR-016**: The learner MUST be able to add, edit, reprioritize, and pause/complete goals; the
-  tutor MAY propose a goal automatically on detecting a pattern, subject to the learner's approval.
+- **FR-016**: The learner MUST be able to add, edit, reprioritize, and pause/complete goals through
+  natural-language conversation with the tutor (no dedicated goal commands in v1); the tutor MAY
+  propose a goal automatically on detecting a pattern, subject to the learner's approval.
 - **FR-017**: The tutor MUST build on prior sessions by incorporating session summaries (topics,
   vocab introduced, errors) into its context, and MUST avoid recently-covered topics where
   possible.
@@ -233,8 +244,10 @@ estimates; request progress and verify an accurate text summary; verify a daily 
 - **FR-023**: The learner MUST be able to view progress on demand: per-skill CEFR, current focus,
   top weaknesses, due reviews, and streak/XP.
 - **FR-024**: The system MUST send a daily reminder over Telegram to review or hold a session.
-- **FR-025**: The learner MUST be able to influence tutor behavior through settings (language mix,
-  correction strictness, response style, focus areas, custom instructions).
+- **FR-025**: Tutor behavior MUST be influenceable through settings (language mix, correction
+  strictness, response style, focus areas, custom instructions). In v1 these settings are
+  config/seed-provided and shape the tutor, but are NOT runtime-editable via Telegram (a runtime
+  settings UI is deferred, per docs/08).
 
 **Reliability, security & quality (cross-cutting)**
 
@@ -251,7 +264,12 @@ estimates; request progress and verify an accurate text summary; verify a daily 
 - **FR-030**: Teacher/analyzer correction quality MUST be measurable by an evaluation harness
   (precision-weighted F0.5 over edit spans plus an overcorrection rate, per CEFR level) over a
   hand-authored A1–A2 golden set, and a quality gate MUST block any teacher/analyzer prompt or
-  model change that drops quality below the established baseline or raises overcorrection.
+  model change that drops quality below the established baseline or raises overcorrection. Authoring
+  the golden set is an in-scope v1 deliverable with a minimum size of ≥150 cases including 25–30%
+  correct sentences; it gates v1 completion.
+- **FR-031**: A session MUST be bounded by an idle timeout — it ends after a configurable period of
+  inactivity (default ~30 minutes) — and the session summary MUST be generated when the session
+  closes. A new learner message after a closed session MUST start a new session.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -264,7 +282,8 @@ estimates; request progress and verify an accurate text summary; verify a daily 
 - **Vocabulary card**: a word with translation, example, part of speech, and spaced-repetition
   state (scheduling fields), linked to its source message; unique per word.
 - **Session**: a learning session — start/end, the curriculum focus at the time, and a link to its
-  summary.
+  summary. Bounded by an idle timeout (configurable, default ~30 min); the summary is generated on
+  close, and a message after a closed session opens a new one.
 - **Message**: a conversation turn — role (learner/tutor), content, the interaction mode used, and
   any structured mode payload (e.g. quiz data).
 - **Error log**: a recorded correction — grammar point, original, correction, explanation,
