@@ -144,8 +144,8 @@ T010 key skeleton; depends on the eval scorer (T019).
 
 - [ ] T051 Implement self-alert to the authorized learner on errors/outages and confirm structured logging wraps every AI call (FR-027, docs/09 Q12)
 - [ ] T052 [P] Token-spend logging per turn in `lib/ai/` (docs/09 Q7/Q12)
-- [ ] T053 [P] Add `Dockerfile` (Next.js standalone) ensuring morphology data files are copied into the image; add `compose.yaml`
-- [ ] T054 Add a webhook-registration script (`setWebhook` with secret token, `APP_URL`) in `scripts/`
+- [X] T053 [P] Add `Dockerfile` (Next.js standalone) ensuring morphology data files are copied into the image; add `compose.yaml`
+- [X] T054 Add a webhook-registration script (`setWebhook` with secret token, `APP_URL`) in `scripts/`
 - [ ] T055 [P] Optional: periodic JSON export of learning data (docs/09 Q11) in `lib/scheduler/`
 - [ ] T056 Run `quickstart.md` end-to-end validation scenarios 1–6 and confirm the v1 Definition of Done
 

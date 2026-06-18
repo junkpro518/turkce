@@ -1,0 +1,19 @@
+.git
+node_modules
+.next
+.env
+.env.*
+!.env.example
+coverage
+*.log
+# Local morphology data copies (the image copies fresh ones from node_modules)
+/turkish_finite_state_machine.xml
+/turkish_dictionary.txt
+/turkish_misspellings.txt
+/turkish_morphological_lexicon.txt
+/suffixes.txt
+/pronunciations.txt
+# Docs / specs / tests not needed at build
+docs
+specs
+tests

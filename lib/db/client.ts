@@ -12,7 +12,7 @@ let cached: Db | null = null;
 export function getDb(): Db {
   if (!cached) {
     const { DATABASE_URL } = getEnv();
-    cached = drizzle(postgres(DATABASE_URL), { schema });
+    cached = drizzle(postgres(DATABASE_URL, { ssl: "require" }), { schema });
   }
   return cached;
 }
