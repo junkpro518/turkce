@@ -14,7 +14,9 @@ export interface TutorSettings {
 }
 
 export const DEFAULT_SETTINGS: TutorSettings = {
-  language_mix: "balanced",
+  // Arabic-dominant by default: the learner is an Arabic speaker; explanations must be in Arabic,
+  // especially at A1–A2 (Turkish only for target words/examples, always glossed).
+  language_mix: "arabic_heavy",
   correction_strictness: "moderate",
   response_style: "casual",
   focus_areas: ["grammar", "conversation", "vocabulary"],

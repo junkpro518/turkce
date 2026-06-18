@@ -13,6 +13,7 @@ import { generateObject } from "ai";
 import { A1_KEYS } from "../data/curriculum/keys";
 import { analyzeMessage } from "../lib/analyzer/correct";
 import { filterOvercorrections } from "../lib/analyzer/overcorrection";
+import { ANALYZER_SYSTEM, OVERCORRECTION_SYSTEM } from "../lib/ai/prompts";
 import {
   AnalysisResultSchema,
   OvercorrectionVerdictSchema,
@@ -28,15 +29,6 @@ const modelId = process.env.ANALYZER_MODEL ?? "openai/gpt-5";
 const openrouter = createOpenRouter({ apiKey });
 const model = openrouter(modelId);
 const KNOWN = new Set(A1_KEYS.map((n) => n.key));
-
-const ANALYZER_SYSTEM = `You are a precise Turkish grammar analyzer for an Arabic-speaking A1–A2 learner.
-Analyze ONLY the learner's message with a real Turkish taxonomy (vowel harmony, case suffixes,
-possessives, tense/conjugation, word order, negation, questions, plurals). Make MINIMAL edits — do
-NOT rewrite correct sentences. For each genuine error give the corrected form, the specific grammar
-point, and an explanation in Arabic of WHY. If the sentence is already correct, return empty arrays.`;
-
-const OVER_SYSTEM = `Verify whether the learner's ORIGINAL Turkish was already correct (i.e. the
-proposed correction is an overcorrection). Be conservative: if unsure, say the original was correct.`;
 
 async function rawAnalyze(text: string): Promise<unknown> {
   const { object } = await generateObject({
@@ -54,7 +46,7 @@ async function verdict(e: AnalysisError) {
     model,
     schema: OvercorrectionVerdictSchema,
     temperature: 0.1,
-    system: OVER_SYSTEM,
+    system: OVERCORRECTION_SYSTEM,
     prompt: `Original: ${e.original}\nProposed correction: ${e.correction}\nWas the original already correct?`,
   });
   return object;

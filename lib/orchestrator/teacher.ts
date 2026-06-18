@@ -1,5 +1,6 @@
 import { generateObject } from "ai";
 import { TEMPERATURE, teacherFallbackModel, teacherModel } from "../ai/provider";
+import { buildTeacherSystem } from "../ai/prompts";
 import { TeacherDecisionSchema, type QuizPayload, type TeacherDecision } from "../ai/schemas";
 import { logError, logWarn } from "../config/logger";
 
@@ -7,17 +8,8 @@ import { logError, logWarn } from "../config/logger";
 // interaction mode and, when it chooses to quiz, emits a structured quiz. This trades token-level
 // streaming for reliable mode/quiz judgment; the client still shows a typing indicator and splits
 // long replies (FR-004 reduced to typing + full message for the structured path).
-
-export const TEACHER_SYSTEM = `You are a warm, intelligent Turkish tutor for an Arabic-speaking
-learner (level A1–A2). Speak Arabic and Turkish, never English. Read the learner and DECIDE the
-interaction mode yourself:
-- "discuss": natural conversation to build fluency.
-- "answer": answer a direct question about a word/rule.
-- "quiz": check mastery — set "quiz" to {question, choices[2-5], correctIndex, explanation}.
-- "story" / "roleplay" / "drill": as pedagogically useful.
-Return {mode, reply, quiz}. "reply" is your natural message to the learner. Only include "quiz"
-when mode is "quiz"; otherwise null. Keep everything level-appropriate. Express uncertainty rather
-than asserting something you are unsure is correct.`;
+//
+// The system prompt is built per learner (level + language mix) — Arabic-dominant, see ai/prompts.
 
 export interface TeacherMessage {
   role: "user" | "assistant";
@@ -63,14 +55,21 @@ export async function decideTurn(deps: DecideDeps): Promise<TeacherDecision | nu
   return { mode, reply: d.reply, quiz };
 }
 
-/** Live binding: structured teacher decision via the fast model, with backup-model fallback. */
-export async function generateTeacherDecisionRaw(messages: TeacherMessage[]): Promise<unknown> {
+/**
+ * Live binding: structured teacher decision via the fast model, with backup-model fallback. The
+ * `system` prompt is built per learner (Arabic-dominant, level-scaled) by the caller via
+ * buildTeacherSystem; defaults to an A1 / arabic_heavy prompt.
+ */
+export async function generateTeacherDecisionRaw(
+  messages: TeacherMessage[],
+  system: string = buildTeacherSystem("A1", "arabic_heavy"),
+): Promise<unknown> {
   const call = async (model: ReturnType<typeof teacherModel>) => {
     const { object } = await generateObject({
       model,
       schema: TeacherDecisionSchema,
       temperature: TEMPERATURE.teacher,
-      system: TEACHER_SYSTEM,
+      system,
       messages,
     });
     return object;

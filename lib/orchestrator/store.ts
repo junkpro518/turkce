@@ -118,6 +118,23 @@ export async function getProfileId(telegramUserId: number): Promise<string | nul
   return rows[0]?.id ?? null;
 }
 
+/** Learner context for building the teacher prompt (level + language mix). */
+export async function getProfileContext(
+  profileId: string,
+): Promise<{ cefrOverall: string; languageMix: string }> {
+  const db = getDb();
+  const rows = await db
+    .select({ cefrOverall: learnerProfile.cefrOverall, settings: learnerProfile.settings })
+    .from(learnerProfile)
+    .where(eq(learnerProfile.id, profileId))
+    .limit(1);
+  const row = rows[0];
+  return {
+    cefrOverall: row?.cefrOverall ?? "A1",
+    languageMix: row?.settings?.language_mix ?? "arabic_heavy",
+  };
+}
+
 /** Mark a message flagged (🚩) by the learner (FR-010). */
 export async function flagMessage(messageId: string): Promise<void> {
   const db = getDb();

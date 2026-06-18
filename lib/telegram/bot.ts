@@ -4,7 +4,8 @@ import { FRIENDLY_ERROR, logError } from "../config/logger";
 import { realAnalyzer } from "../analyzer";
 import { handleTurn } from "../orchestrator/turn";
 import { decideTurn, generateTeacherDecisionRaw } from "../orchestrator/teacher";
-import { dbStores, flagMessage, getProfileId } from "../orchestrator/store";
+import { buildTeacherSystem } from "../ai/prompts";
+import { dbStores, flagMessage, getProfileContext, getProfileId } from "../orchestrator/store";
 import type { TeacherPort } from "../orchestrator/ports";
 import type { QuizPayload } from "../ai/schemas";
 import { buildQuizKeyboard, gradeQuiz } from "./quiz";
@@ -49,8 +50,10 @@ export function getBot(): Bot {
 
     // Teacher port: structured judgment → render reply, and a quiz card if the teacher chose to quiz.
     const teacher: TeacherPort = async ({ text }) => {
+      const { cefrOverall, languageMix } = await getProfileContext(profileId);
+      const system = buildTeacherSystem(cefrOverall, languageMix);
       const decision = await decideTurn({
-        generate: () => generateTeacherDecisionRaw([{ role: "user", content: text }]),
+        generate: () => generateTeacherDecisionRaw([{ role: "user", content: text }], system),
       });
       if (!decision) {
         await ctx.reply(FRIENDLY_ERROR);

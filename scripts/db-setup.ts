@@ -36,7 +36,13 @@ try {
     await db.insert(learnerProfile).values({ telegramUserId: allowed, settings: DEFAULT_SETTINGS });
     console.log(`✓ seeded learner profile for telegram_user_id=${allowed}`);
   } else {
-    console.log(`✓ profile already exists for telegram_user_id=${allowed}`);
+    // Realign settings to current defaults (e.g. language_mix → arabic_heavy). Single-user app, no
+    // runtime settings editing, so overwriting with defaults is safe.
+    await db
+      .update(learnerProfile)
+      .set({ settings: DEFAULT_SETTINGS, updatedAt: new Date() })
+      .where(eq(learnerProfile.telegramUserId, allowed));
+    console.log(`✓ realigned settings to defaults for telegram_user_id=${allowed}`);
   }
   console.log("DB setup done.");
 } catch (err) {
