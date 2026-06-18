@@ -40,18 +40,30 @@ export const OvercorrectionVerdictSchema = z.object({
 });
 export type OvercorrectionVerdict = z.infer<typeof OvercorrectionVerdictSchema>;
 
-export const QuizPayloadSchema = z
-  .object({
-    question: z.string(),
-    choices: z.array(z.string()).min(2).max(5),
-    correctIndex: z.number().int().nonnegative(),
-    explanation: z.string(),
-  })
-  .refine((q) => q.correctIndex < q.choices.length, {
-    message: "correctIndex out of range",
-    path: ["correctIndex"],
-  });
+export const QuizCoreSchema = z.object({
+  question: z.string(),
+  choices: z.array(z.string()).min(2).max(5),
+  correctIndex: z.number().int().nonnegative(),
+  explanation: z.string(),
+});
+
+export const QuizPayloadSchema = QuizCoreSchema.refine((q) => q.correctIndex < q.choices.length, {
+  message: "correctIndex out of range",
+  path: ["correctIndex"],
+});
 export type QuizPayload = z.infer<typeof QuizPayloadSchema>;
+
+export const TEACHER_MODES = ["discuss", "answer", "quiz", "story", "roleplay", "drill"] as const;
+
+// The teacher's structured judgment per turn (FR-002): it chooses the interaction mode and, when
+// it chooses to quiz, emits a structured quiz. `quiz` uses the unrefined core; correctIndex range
+// is validated in decideTurn so a bad quiz downgrades to a plain reply rather than losing the turn.
+export const TeacherDecisionSchema = z.object({
+  mode: z.enum(TEACHER_MODES),
+  reply: z.string(),
+  quiz: QuizCoreSchema.nullable().optional(),
+});
+export type TeacherDecision = z.infer<typeof TeacherDecisionSchema>;
 
 export const VocabCardBuildSchema = z.object({
   word: z.string(),
