@@ -1,21 +1,21 @@
-# Deploy on the VPS behind an existing Traefik. Fill DOMAIN, CERT_RESOLVER, TRAEFIK_NETWORK (and
-# the app secrets + APP_URL) in a .env file next to this compose, then: docker compose up -d --build
+# Deploy on the VPS behind the existing Traefik (network "proxy", certresolver "myresolver").
+# Put the app secrets + APP_URL in a .env file next to this compose, then:
+#   docker compose up -d --build
 services:
   app:
     build: .
     image: turkce:latest
     restart: unless-stopped
     env_file: .env
-    networks: [traefik]
+    networks: [proxy]
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.turkce.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.turkce.rule=Host(`turkce.mohammed518.com`)"
       - "traefik.http.routers.turkce.entrypoints=websecure"
       - "traefik.http.routers.turkce.tls=true"
-      - "traefik.http.routers.turkce.tls.certresolver=${CERT_RESOLVER}"
+      - "traefik.http.routers.turkce.tls.certresolver=myresolver"
       - "traefik.http.services.turkce.loadbalancer.server.port=3000"
 
 networks:
-  traefik:
+  proxy:
     external: true
-    name: ${TRAEFIK_NETWORK}
