@@ -129,9 +129,9 @@ T010 key skeleton; depends on the eval scorer (T019).
 
 - [ ] T045 [US2] Author the **full A1→A2 curriculum tree** in `data/curriculum/` — expand the T010 A1 key skeleton with `canDo` competencies + `targetVocab`, and add the A2 nodes (grounded in docs/10 sources, rephrased not copied, prerequisites + borderline marks + required flags) per `CurriculumNode`
 - [ ] T046 Validate the curriculum tree in `tests/curriculum/tree.test.ts`: unique keys, all prerequisites resolve, levels/required flags valid, A1 keys consistent with T010
-- [ ] T047 [US1] Author the golden set in `data/golden/` — ≥150 hand-written A1–A2 cases (case suffixes, possessive agreement, postpositions, vowel harmony, core tenses) including 25–30% correct sentences; leakage-safe (not seeded from public GECTurk)
+- [X] T047 [US1] Author the golden set in `data/golden/` — ≥150 hand-written A1–A2 cases (case suffixes, possessive agreement, postpositions, vowel harmony, core tenses) including 25–30% correct sentences; leakage-safe (not seeded from public GECTurk)
 - [ ] T048 [P] Add a supplementary GECTurk `movie_reviews` diversity sample (apache-2.0) to `data/golden/` as a non-core supplement (clearly separated)
-- [ ] T049 [US1] Implement the golden-set runner + `npm run eval` in `lib/eval/run.ts`; record the baseline F0.5 + overcorrection rate per CEFR level
+- [X] T049 [US1] Implement the golden-set runner + `npm run eval` in `lib/eval/run.ts`; record the baseline F0.5 + overcorrection rate per CEFR level
 - [ ] T050 Add a GitHub Actions workflow (`.github/workflows/eval.yml`) running Vitest + the eval gate on changes to teacher/analyzer prompts or model config; block on F0.5 regression or raised overcorrection (FR-030)
 
 **Checkpoint**: Curriculum drives selection; eval baseline recorded; CI gate active (SC-001).
