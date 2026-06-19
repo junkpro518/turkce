@@ -1,7 +1,7 @@
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { getDb } from "../db/client";
 import { errorLog, grammarMastery, learnerProfile, messages, sessions } from "../db/schema";
-import { SESSION } from "../config/constants";
+import { OUTREACH, SESSION } from "../config/constants";
 import { initialMastery, updateMastery, type MasteryState, type MasteryStatus } from "../mastery";
 import type { MasterySignal } from "../ai/schemas";
 import type { NewMessage, TurnStores } from "./ports";
@@ -139,4 +139,43 @@ export async function getProfileContext(
 export async function flagMessage(messageId: string): Promise<void> {
   const db = getDb();
   await db.update(messages).set({ flagged: true }).where(eq(messages.id, messageId));
+}
+
+/** tz-local "today" as YYYY-MM-DD (en-CA formats that way). */
+function tzToday(tz: string): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: tz }).format(new Date());
+}
+
+/**
+ * 002 T006 (fix X2): mark the learner active today on every inbound event. The outreach
+ * active-guard ("active = last_active_date == today") and the inactivity nudge depend on this.
+ */
+export async function touchLastActive(profileId: string): Promise<void> {
+  const db = getDb();
+  await db
+    .update(learnerProfile)
+    .set({ lastActiveDate: tzToday(OUTREACH.timezone), updatedAt: new Date() })
+    .where(eq(learnerProfile.id, profileId));
+}
+
+/** 002 T015: link a persisted message to the Telegram message id of its sent (quiz) card. */
+export async function setTelegramMessageId(
+  messageId: string,
+  telegramMessageId: number,
+): Promise<void> {
+  const db = getDb();
+  await db.update(messages).set({ telegramMessageId }).where(eq(messages.id, messageId));
+}
+
+/** 002 T015: recover a message (and its mode_payload) by the Telegram card message id. */
+export async function findMessageByTelegramId(
+  telegramMessageId: number,
+): Promise<{ id: string; modePayload: unknown } | null> {
+  const db = getDb();
+  const rows = await db
+    .select({ id: messages.id, modePayload: messages.modePayload })
+    .from(messages)
+    .where(eq(messages.telegramMessageId, telegramMessageId))
+    .limit(1);
+  return rows[0] ?? null;
 }

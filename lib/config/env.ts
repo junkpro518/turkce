@@ -14,6 +14,13 @@ const EnvSchema = z.object({
   TELEGRAM_WEBHOOK_SECRET: z.string().min(1),
   ALLOWED_TELEGRAM_USER_ID: z.coerce.number().int().positive(),
   APP_URL: z.string().url(),
+  // 002 outreach overrides (optional; defaults in lib/config/constants.ts OUTREACH).
+  OUTREACH_TZ: z.string().min(1).optional(),
+  OUTREACH_DAILY_CAP: z.coerce.number().int().positive().optional(),
+  OUTREACH_INACTIVITY_DAYS: z.coerce.number().int().positive().optional(),
+  OUTREACH_ACTIVE_START: z.coerce.number().int().min(0).max(23).optional(),
+  OUTREACH_ACTIVE_END: z.coerce.number().int().min(1).max(24).optional(),
+  SCHEDULER_TICK_MIN: z.coerce.number().int().positive().optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

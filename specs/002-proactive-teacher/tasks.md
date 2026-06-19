@@ -25,17 +25,17 @@ polish. `[US1]` = post-action continuation; `[US2]` = scheduler-initiated outrea
 
 ## Phase 1: Setup
 
-- [ ] T001 Add outreach env vars to `.env.example`: `OUTREACH_TZ`, `OUTREACH_DAILY_CAP`, `OUTREACH_INACTIVITY_DAYS`, `OUTREACH_ACTIVE_START`, `OUTREACH_ACTIVE_END`, `SCHEDULER_TICK_MIN`
+- [X] T001 Add outreach env vars to `.env.example`: `OUTREACH_TZ`, `OUTREACH_DAILY_CAP`, `OUTREACH_INACTIVITY_DAYS`, `OUTREACH_ACTIVE_START`, `OUTREACH_ACTIVE_END`, `SCHEDULER_TICK_MIN`
 
 ---
 
 ## Phase 2: Foundational (Blocking) — DB + config + activity tracking
 
-- [ ] T002 Add `messages.telegram_message_id` (bigint, nullable) + index `messages_telegram_message_id` in `lib/db/schema.ts`
-- [ ] T003 Add `outreach_log` table (id, profile_id fk→learner_profile cascade, type, sent_at) + index `outreach_log_profile_sent` in `lib/db/schema.ts`
+- [X] T002 Add `messages.telegram_message_id` (bigint, nullable) + index `messages_telegram_message_id` in `lib/db/schema.ts`
+- [X] T003 Add `outreach_log` table (id, profile_id fk→learner_profile cascade, type, sent_at) + index `outreach_log_profile_sent` in `lib/db/schema.ts`
 - [ ] T004 Generate the Drizzle migration into `drizzle/` (`npm run db:generate`)
-- [ ] T005 Add outreach config to `lib/config/constants.ts` (timezone, active window 09:00–21:00, dailyCap=2, inactivityDays=2, tickMin=15) + env overrides in `lib/config/env.ts`
-- [ ] T006 **(fix X2)** Update `learner_profile.last_active_date` (tz-local "today") on every inbound learner message — in `lib/orchestrator/turn.ts` (via a `store.touchLastActive(profileId)` added to `lib/orchestrator/store.ts`). Without this, the active-guard and inactivity nudge cannot work.
+- [X] T005 Add outreach config to `lib/config/constants.ts` (timezone, active window 09:00–21:00, dailyCap=2, inactivityDays=2, tickMin=15) + env overrides in `lib/config/env.ts`
+- [X] T006 **(fix X2)** Update `learner_profile.last_active_date` (tz-local "today") on every inbound learner message — in `lib/orchestrator/turn.ts` (via a `store.touchLastActive(profileId)` added to `lib/orchestrator/store.ts`). Without this, the active-guard and inactivity nudge cannot work.
 
 **Checkpoint**: schema + migration + config + activity tracking compile (`tsc`).
 
@@ -47,8 +47,8 @@ polish. `[US1]` = post-action continuation; `[US2]` = scheduler-initiated outrea
 - [ ] T008 [US2] Implement `lib/outreach/decide.ts` — pure `shouldSendOutreach(now, state, cfg)` per contracts; **active iff `lastActive` is tz-local today**; inactivity nudge when `today - lastActive >= inactivityDays` — to pass T007
 - [ ] T009 [P] [US2] Vitest for `buildReminder`/`buildNudge`: Arabic, grounded in due-count/focus, deterministic — in `tests/outreach/messages.test.ts`
 - [ ] T010 [US2] Implement `lib/outreach/messages.ts` — pure Arabic templated reminder + nudge builders to pass T009
-- [ ] T011 [P] [US1] Vitest for continuation context: builds correct/incorrect Arabic teacher-context from (quiz, chosenIndex, correct); deterministic — in `tests/orchestrator/continuation-context.test.ts`
-- [ ] T012 [US1] Implement `lib/orchestrator/continuation-context.ts` — pure `buildContinuationContext(quiz, chosenIndex, correct)` → teacher messages to pass T011
+- [X] T011 [P] [US1] Vitest for continuation context: builds correct/incorrect Arabic teacher-context from (quiz, chosenIndex, correct); deterministic — in `tests/orchestrator/continuation-context.test.ts`
+- [X] T012 [US1] Implement `lib/orchestrator/continuation-context.ts` — pure `buildContinuationContext(quiz, chosenIndex, correct)` → teacher messages to pass T011
 
 **Checkpoint**: `npm test` green for the deterministic outreach + continuation-context core.
 
@@ -56,8 +56,8 @@ polish. `[US1]` = post-action continuation; `[US2]` = scheduler-initiated outrea
 
 ## Phase 4: Orchestrator — Continuation (Layer 2)
 
-- [ ] T013 [P] [US1] Vitest (mocked teacher) for `continueAfterQuiz`: exactly one teacher call, returns one decision, no recursion, null-fallback on failure — in `tests/orchestrator/continuation.test.ts`
-- [ ] T014 [US1] Implement `lib/orchestrator/continuation.ts` — `continueAfterQuiz(profileId, quiz, chosenIndex, correct)` using `buildContinuationContext` + the existing `decideTurn`/`generateTeacherDecisionRaw`; returns one `TeacherDecision | null` to pass T013
+- [X] T013 [P] [US1] Vitest (mocked teacher) for `continueAfterQuiz`: exactly one teacher call, returns one decision, no recursion, null-fallback on failure — in `tests/orchestrator/continuation.test.ts`
+- [X] T014 [US1] Implement `lib/orchestrator/continuation.ts` — `continueAfterQuiz(profileId, quiz, chosenIndex, correct)` using `buildContinuationContext` + the existing `decideTurn`/`generateTeacherDecisionRaw`; returns one `TeacherDecision | null` to pass T013
 
 **Checkpoint**: continuation produces exactly one next-step turn under mocked AI (SC-001, SC-002).
 
@@ -65,9 +65,9 @@ polish. `[US1]` = post-action continuation; `[US2]` = scheduler-initiated outrea
 
 ## Phase 5: Thin Telegram Client (Layer 3)
 
-- [ ] T015 [US1] Extend `lib/orchestrator/store.ts`: `setTelegramMessageId(messageId, tgMessageId)` and `findMessageByTelegramId(tgMessageId)` (returns row incl. `mode_payload`)
-- [ ] T016 [US1] In `lib/telegram/bot.ts`, when sending a quiz card: persist the assistant message, then set its `telegram_message_id` to the sent card's id; remove the in-memory `quizStore`
-- [ ] T017 [US1] Rewrite the quiz callback in `lib/telegram/bot.ts`: DB lookup by `telegram_message_id` → grade (`gradeQuiz` on `mode_payload`) → reveal → `continueAfterQuiz` → send the continuation (and any next quiz card stored); if payload missing, friendly "card expired" answer (never a silent no-op) (FR-004)
+- [X] T015 [US1] Extend `lib/orchestrator/store.ts`: `setTelegramMessageId(messageId, tgMessageId)` and `findMessageByTelegramId(tgMessageId)` (returns row incl. `mode_payload`)
+- [X] T016 [US1] In `lib/telegram/bot.ts`, when sending a quiz card: persist the assistant message, then set its `telegram_message_id` to the sent card's id; remove the in-memory `quizStore`
+- [X] T017 [US1] Rewrite the quiz callback in `lib/telegram/bot.ts`: DB lookup by `telegram_message_id` → grade (`gradeQuiz` on `mode_payload`) → reveal → `continueAfterQuiz` → send the continuation (and any next quiz card stored); if payload missing, friendly "card expired" answer (never a silent no-op) (FR-004)
 - [ ] T018 [US2] Extend `lib/orchestrator/store.ts` with outreach queries: `todayOutreachCount(profileId, tz)`, `dueReviewCount(profileId)`, `lastSessionDate(profileId)`, `insertOutreachLog(profileId, type)`
 
 **Checkpoint**: quiz answer continues live; quiz state recovers from DB (SC-003).

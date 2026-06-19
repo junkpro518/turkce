@@ -30,3 +30,14 @@ export const SESSION = {
   /** A session closes after this many minutes of inactivity (FR-031). */
   idleTimeoutMin: 30,
 } as const;
+
+// 002 — proactive outreach defaults (env-overridable; see lib/config/env.ts). Quiet window is the
+// ACTIVE window: outreach is allowed only within [activeStartHour, activeEndHour) tz-local.
+export const OUTREACH = {
+  timezone: "Asia/Riyadh",
+  activeStartHour: 9,
+  activeEndHour: 21,
+  dailyCap: 2,
+  inactivityDays: 2,
+  schedulerTickMin: 15,
+} as const;

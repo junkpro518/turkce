@@ -107,9 +107,29 @@ export const messages = pgTable(
     modePayload: jsonb("mode_payload"),
     analyzedAt: timestamp("analyzed_at", tz), // null = pending analysis (backfill target)
     flagged: boolean("flagged").notNull().default(false),
+    // Telegram message id of a sent quiz card; lets the quiz callback recover mode_payload and
+    // grade across restarts (002 FR-004).
+    telegramMessageId: bigint("telegram_message_id", { mode: "number" }),
     createdAt: timestamp("created_at", tz).notNull().defaultNow(),
   },
-  (t) => [index("messages_session_created").on(t.sessionId, t.createdAt)],
+  (t) => [
+    index("messages_session_created").on(t.sessionId, t.createdAt),
+    index("messages_telegram_message_id").on(t.telegramMessageId),
+  ],
+);
+
+// 002: proactive outreach log — enforces the daily cap, dedups, and recovers across restarts.
+export const outreachLog = pgTable(
+  "outreach_log",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    profileId: uuid("profile_id")
+      .notNull()
+      .references(() => learnerProfile.id, { onDelete: "cascade" }),
+    type: text("type").notNull(), // reminder | nudge
+    sentAt: timestamp("sent_at", tz).notNull().defaultNow(),
+  },
+  (t) => [index("outreach_log_profile_sent").on(t.profileId, t.sentAt)],
 );
 
 export const errorLog = pgTable("error_log", {
