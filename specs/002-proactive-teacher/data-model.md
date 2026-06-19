@@ -31,7 +31,9 @@ Index: `outreach_log_profile_sent` on `(profile_id, sent_at)` — used to count 
 | scheduler tick interval | 15 min | `SCHEDULER_TICK_MIN` |
 
 ## Derived state for the decision (read, not stored)
-- `lastActive` ← `learner_profile.last_active_date` (001).
+- `lastActive` ← `learner_profile.last_active_date`. **(fix X2)** This column MUST be updated to
+  tz-local "today" on every inbound learner message (001 did not do this); the outreach logic
+  depends on it. **(fix X3)** "active" is defined as `last_active_date == today` (tz-local).
 - `dueReviewCount` ← count of `vocab_cards` with `due_at <= now`.
 - `lastSessionDate` ← latest `sessions.started_at`.
 - `todayOutreachCount` ← count of `outreach_log` rows for today (tz-local).
@@ -41,5 +43,6 @@ Index: `outreach_log_profile_sent` on `(profile_id, sent_at)` — used to count 
   todayOutreachCount}, cfg)`; identical inputs → identical decision.
 - Daily cap: never emit when `todayOutreachCount >= cap`.
 - Quiet hours: never emit when tz-local time is outside the active window.
-- Active guard: never emit when the learner was active within the activity window.
+- Active guard: never emit when `last_active_date == today` (tz-local) — i.e. the learner has been
+  active today (X3).
 - Quiz grading reads only DB state (no in-memory dependency).

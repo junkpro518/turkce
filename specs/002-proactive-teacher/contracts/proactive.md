@@ -18,10 +18,13 @@ shouldSendOutreach(now: Date, state: OutreachState, cfg: OutreachConfig): Outrea
 ```
 Order of checks (all must pass to send):
 1. tz-local(now) within [activeStartHour, activeEndHour) — else `{send:false, reason:"quiet-hours"}`.
-2. learner not active now (lastActive older than the activity window) — else `reason:"active"`.
+2. learner not active today — i.e. `lastActive` is NOT tz-local today (X3) — else `reason:"active"`.
 3. todayOutreachCount < dailyCap — else `reason:"cap-reached"`.
-4. select type: `nudge` if inactive ≥ inactivityDays; else `reminder` if dueReviewCount > 0 or no
-   session today; else `{send:false, reason:"nothing-due"}`.
+4. select type: `nudge` if `today - lastActive >= inactivityDays`; else `reminder` if
+   dueReviewCount > 0 or no session today; else `{send:false, reason:"nothing-due"}`.
+
+> `lastActive` is `learner_profile.last_active_date`, updated to tz-local today on every inbound
+> learner message (X2; tasks T006). "active" = `lastActive == today`.
 
 ## 2. Outreach messages (pure) — `lib/outreach/messages.ts`
 ```
@@ -56,7 +59,7 @@ card's id (store.setTelegramMessageId).
 startScheduler(): void   // setInterval(tick, SCHEDULER_TICK_MIN); started by instrumentation.register()
 tick():
   for the single profile:
-    - session-idle close + summary (001 FR-031)
+    - session-idle close WITHOUT summary (001 FR-031; X1 — session-summary is 001 US2, deferred)
     - analysis backfill: re-run analysis where messages.analyzed_at IS NULL (001 research A2)
     - SRS-due check feeds outreach state
     - decision = shouldSendOutreach(now, state, cfg)
