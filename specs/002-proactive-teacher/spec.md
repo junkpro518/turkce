@@ -18,6 +18,15 @@ initiates contact (reminders / inactivity nudges) when appropriate — all groun
 model and bounded so it never nags. It unifies and extends the previously-specified daily reminder
 (001 FR-024) and scheduler (001 US4) and adds post-action continuation.
 
+## Clarifications
+
+### Session 2026-06-19
+
+- Q: After a quiz answer, how does the tutor continue? → A: Always exactly one continuation — deterministically reveal the result + send one next-step message (content by teacher judgment), then wait. The *decision* to continue is deterministic (never silent); the *content* is intelligent.
+- Q: Max proactive (bot-initiated) messages per day? → A: 2 per day (e.g. one daily reminder + at most one inactivity nudge).
+- Q: Inactivity threshold before a re-engagement nudge? → A: 2 days of no activity.
+- Q: Quiet hours? → A: Yes — no outreach during a configurable quiet window (default e.g. 09:00–21:00) using a configured timezone.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Conversation continues after the learner acts (Priority: P1)
@@ -95,7 +104,8 @@ frequency caps prevent more than the allowed number of proactive messages per da
 - **Respect activity**: no proactive outreach while the learner is mid-session or has just messaged.
 - **Outreach failure**: a failed proactive send is logged and retried per policy; it never crashes
   the scheduler or affects other learner state.
-- **Quiet hours (optional)**: outreach should avoid unreasonable times where feasible.
+- **Quiet hours**: outreach is suppressed during the configured quiet window (timezone-aware);
+  due outreach is deferred to the next allowed time or skipped — never sent during quiet hours.
 
 ## Requirements *(mandatory)*
 
@@ -103,8 +113,10 @@ frequency caps prevent more than the allowed number of proactive messages per da
 
 **Post-action continuation (US1)**
 
-- **FR-001**: After the learner answers a quiz card, the system MUST, in addition to revealing the
-  result + explanation, deliver a tutor-judged next-step message (reaction + lead-forward).
+- **FR-001**: After the learner answers a quiz card, the system MUST — deterministically, every time
+  — in addition to revealing the result + explanation, deliver exactly one tutor-judged next-step
+  message (reaction + lead-forward). The decision to continue is deterministic (never silent); the
+  content is by the teacher's judgment.
 - **FR-002**: The continuation MUST be grounded in the outcome (correct vs. incorrect) and the
   learner's level — reinforcing on a wrong answer, advancing on a correct one.
 - **FR-003**: Exactly one proactive continuation MUST follow a single learner action; the
@@ -120,9 +132,9 @@ frequency caps prevent more than the allowed number of proactive messages per da
 - **FR-006**: The system MUST send a daily reminder (review due cards / hold a session) grounded in
   the learner model (due reviews, current focus), via the internal scheduler.
 - **FR-007**: The system MUST send a gentle re-engagement nudge when the learner has been inactive
-  beyond a configurable inactivity threshold.
-- **FR-008**: Proactive outreach MUST be bounded by a configurable daily frequency cap; reminders
-  and nudges MUST NOT stack beyond it.
+  beyond a configurable inactivity threshold (default: 2 days of no activity).
+- **FR-008**: Proactive outreach MUST be bounded by a configurable daily frequency cap (default: 2
+  per day); reminders and nudges MUST NOT stack beyond it.
 - **FR-009**: The system MUST NOT send proactive outreach while the learner is active (recent
   activity / mid-session).
 - **FR-010**: Proactive messages MUST follow the tutor's language rules (Arabic-dominant,
@@ -137,12 +149,17 @@ frequency caps prevent more than the allowed number of proactive messages per da
 - **FR-013**: Proactive behavior MUST be driven by the single internal scheduler (unifying the
   session-idle sweep, SRS-due check, and daily reminder from 001 US4/T044) — no separate
   infrastructure.
+- **FR-014**: The system MUST NOT send proactive outreach during a configurable quiet window
+  (default e.g. 09:00–21:00 active) evaluated in a configured timezone; outreach due during quiet
+  hours is deferred to the next allowed time or skipped, never sent late at night.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Outreach log / state**: a record of proactive messages sent (type: reminder | nudge | …, time),
-  used to enforce frequency caps, avoid duplicates, and recover across restarts. (Extends the
+  used to enforce the daily cap (2/day), avoid duplicates, and recover across restarts. (Extends the
   learner model; `last_active` already exists on the learner profile.)
+- **Outreach config**: timezone + quiet-window + daily cap + inactivity threshold (config-provided
+  defaults; quiet window evaluated in the configured timezone).
 - **Quiz card state**: the quiz payload tied to a sent message, recoverable across restarts so an
   answer can be graded later (today's data model already stores the quiz in the message; what is
   missing is the link from the delivered card back to that stored payload).
@@ -164,6 +181,8 @@ frequency caps prevent more than the allowed number of proactive messages per da
   language rules.
 - **SC-007**: A failed proactive send never crashes the scheduler and is visible in logs (zero
   silent scheduler failures).
+- **SC-008**: No proactive message is sent during the configured quiet window (timezone-aware) —
+  0 late-night sends.
 
 ## Assumptions
 
@@ -172,9 +191,9 @@ frequency caps prevent more than the allowed number of proactive messages per da
   daily reminder + session-idle sweep + SRS-due check there and adds outreach policy on top.
 - **The teacher's structured judgment (001) is reused** to generate continuation/outreach content;
   no new model is introduced.
-- **Frequency cap and inactivity threshold are configurable** with sensible defaults (e.g. at most a
-  small number of proactive messages/day; inactivity measured in days) — exact numbers set in
-  clarify/plan.
-- **Quiet hours** are a nice-to-have; if included, they use a sensible default window.
-- **"Continuation" is one follow-up turn**, then the tutor waits — to avoid runaway self-conversation
-  and runaway cost.
+- **Frequency cap and inactivity threshold are configurable** — defaults set in clarify: max 2
+  proactive messages/day; inactivity nudge after 2 days of no activity.
+- **Quiet hours are in scope**: a configurable timezone-aware quiet window (default e.g. 09:00–21:00
+  active); the learner's timezone is config-provided.
+- **"Continuation" is exactly one follow-up turn** after a learner action, then the tutor waits —
+  the decision to continue is deterministic (no silence), the content is the teacher's judgment.
